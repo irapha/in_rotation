@@ -1,4 +1,6 @@
 secret.py
+.cache-*
+spo/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
