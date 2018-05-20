@@ -1,7 +1,4 @@
 # in_rotation
-An automated script to manage my In Rotation Spotify playlist.
-
-## Introduction
 Have you ever wanted to listen to the bops you're currently into, but don't
 care for organizing playlists? Did you migrate to Spotify from Apple Music and
 miss the 'Recently Added' smart playlist? Then In Rotation is for you.
@@ -9,8 +6,9 @@ miss the 'Recently Added' smart playlist? Then In Rotation is for you.
 Follow my [In Rotation](https://open.spotify.com/user/iraphas/playlist/3mPWxEIv08fdHtVrd2gMDr?si=mgkyPDmuSWicnHtQJQTw6g).
 
 ## Set up
-Clone this repo, `cp secret.py.example secret.py`. Then follow instructions in
-`secret.py` to fill out the necessary information.
+Clone this repo, do `pip install spotipy`, and `cp secret.py.example
+secret.py`. Then follow instructions in `secret.py` to fill out the necessary
+information.
 
 In order to use this script, you must select a playlist to be your "In
 Rotation" playlist and get its id. To do so, run:
