@@ -9,21 +9,27 @@ from secret import USER_EMAIL, CLIENT_ID, CLIENT_SECRET, PLAYLIST_ID
 from util import get_recently_added, get_in_rotation, get_ids
 
 
-def print_aligned(song1, song2):
+def print_aligned(song1, song2, log):
     song1_name = song1[:45]
     song1_name = ' '*(45 - len(song1_name)) + song1_name
-    print('{} | {}'.format(song1_name, song2[:45]))
+    text = '{} | {}'.format(song1_name, song2[:45])
+    print(text)
+    log.write(text + '\n')
 
-def print_song1(song1, message):
+def print_song1(song1, message, log):
     song1_name = song1[:45]
     song1_name = ' '*(45 - len(song1_name)) + song1_name
-    print('{} | {}'.format(song1_name, message))
+    text = '{} | {}'.format(song1_name, message)
+    print(text)
+    log.write(text + '\n')
 
-def print_song2(message, song2):
+def print_song2(message, song2, log):
     song2_name = song2[:45]
     whitespace_len = 45 - len(message)
     assert whitespace_len >= 0
-    print('{} | {}'.format(' '*(whitespace_len) + message, song2_name))
+    text = '{} | {}'.format(' '*(whitespace_len) + message, song2_name)
+    print(text)
+    log.write(text + '\n')
 
 
 if __name__ == '__main__':
@@ -32,6 +38,8 @@ if __name__ == '__main__':
             client_id=CLIENT_ID, client_secret=CLIENT_SECRET, redirect_uri='http://localhost/')
     sp = spotipy.Spotify(auth=token)
     user_id = sp.current_user()['id']
+
+    log = open('log.txt', 'w')
 
     # First, find an alignment. we want to find the first song in in_rotation
     # that has a match in recently_added. any song before it in recently_added
@@ -55,33 +63,31 @@ if __name__ == '__main__':
     matched = False
     while i0 < len(in_rotation) and i1 < len(recently_added):
         if in_rotation[i0][0] == recently_added[i1][0]:
-            print_aligned(in_rotation[i0][1], recently_added[i1][1])
+            print_aligned(in_rotation[i0][1], recently_added[i1][1], log)
             final_playlist.append(in_rotation[i0])
             matched = True
             i0 += 1
             i1 += 1
         else:
             if in_rotation[i0][0] not in get_ids(recently_added):
-                print_song1(in_rotation[i0][1], '[WILL BE REMOVED (old and added manually, or removed from library)]')
+                print_song1(in_rotation[i0][1], '[WILL BE REMOVED (old and added manually, or removed from library)]', log)
                 i0 += 1
             else:
                 if not matched:
-                    print_song2('[WILL BE ADDED (newly added song)]', recently_added[i1][1])
+                    print_song2('[WILL BE ADDED (newly added song)]', recently_added[i1][1], log)
                     final_playlist.append(recently_added[i1])
                     i1 += 1
                 else:
-                    print_song2('[WILL REMAIN OUT (manually removed)]', recently_added[i1][1])
+                    print_song2('[WILL REMAIN OUT (manually removed)]', recently_added[i1][1], log)
                     i1 += 1
 
     for i in range(i0, len(in_rotation)):
         if len(final_playlist) < 100:
             final_playlist.append(in_rotation[i])
-            print_song1(in_rotation[i][1], '[WILL REMAIN (old but playlist < 100 songs)]')
+            print_song1(in_rotation[i][1], '[WILL REMAIN (old but playlist < 100 songs)]', log)
         else:
-            print_song1(in_rotation[i][1], '[WILL BE REMOVED (old and playlist >= 100 songs)]')
+            print_song1(in_rotation[i][1], '[WILL BE REMOVED (old and playlist >= 100 songs)]', log)
     for i in range(i1, len(recently_added)):
-        print_song2('[WILL REMAIN OUT (manually removed)]', recently_added[i][1])
-
-
+        print_song2('[WILL REMAIN OUT (manually removed)]', recently_added[i][1], log)
 
     sp.user_playlist_replace_tracks(user_id, PLAYLIST_ID, get_ids(final_playlist))
