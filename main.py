@@ -1,7 +1,9 @@
 import spotipy
 import spotipy.util as util
 import os
+import sys
 
+from subprocess import call
 from pprint import pprint
 from datetime import datetime, timedelta
 from spotipy.oauth2 import SpotifyClientCredentials
@@ -34,12 +36,21 @@ def print_song2(message, song2, log):
 
 if __name__ == '__main__':
     scope = 'user-library-read playlist-modify-public'
-    token = util.prompt_for_user_token(USER_EMAIL, scope,
-            client_id=CLIENT_ID, client_secret=CLIENT_SECRET, redirect_uri='http://localhost/')
+    try:
+        token = util.prompt_for_user_token(USER_EMAIL, scope,
+                client_id=CLIENT_ID, client_secret=CLIENT_SECRET,
+                redirect_uri='http://localhost/')
+    except EOFError:
+        print('ERROR: Token is not set. Please run main.py manually to generate it.')
+        call('bash /home/raphael/bin/push "In Rotation not updated due to expired token. Please run python main.py manually to fix."', shell=True)
+        sys.exit(-1)
     sp = spotipy.Spotify(auth=token)
     user_id = sp.current_user()['id']
 
     log = open(os.path.join(LOG_PATH, 'log.txt'), 'w')
+    now = datetime.now()
+    print(now)
+    log.write(str(now))
 
     # First, find an alignment. we want to find the first song in in_rotation
     # that has a match in recently_added. any song before it in recently_added

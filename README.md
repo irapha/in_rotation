@@ -5,6 +5,13 @@ miss the 'Recently Added' smart playlist? Then In Rotation is for you.
 
 Follow my [In Rotation](https://open.spotify.com/user/iraphas/playlist/3mPWxEIv08fdHtVrd2gMDr?si=mgkyPDmuSWicnHtQJQTw6g).
 
+## Using the Playlist
+- every day, the playlist is updated.
+- never manually add songs.
+- add songs by (removing and re)adding to your music.
+- remove songs as you wish. removed songs will remain out as long as they're
+  not _the most recently added_ song.
+
 ## Set up
 Clone this repo, do `pip install spotipy`, and `cp secret.py.example
 secret.py`. Then follow instructions in `secret.py` to fill out the necessary
@@ -58,11 +65,19 @@ do `which python`
 
 Then, run `crontab -e`. This will open vim. Insert the following line:
 ```
-0 0 *  *  *  /home/raphael/dev/in_rotation/rot/bin/python /home/raphael/dev/in_rotation/main.py
+0 4 *  *  *  cd /home/raphael/dev/in_rotation/ /home/raphael/dev/in_rotation/rot/bin/python /home/raphael/dev/in_rotation/main.py
 ```
 
-## Using the Playlist
-- every day, the playlist is updated.
-- never manually add songs.
-- add songs by (removing and re)adding to your music.
-- remove songs as you wish. removed songs will remain out as long as they're not THE MOST recently added song.
+The `cd` part is important because it guarantees that the `.cache-{email}`
+file will be visibile to spotipy. Otherwise, the script will attempt to gain
+authorization again, which requires user interaction.
+
+If the token expires, the script will identify it and send a push notification
+to the user with `push`, which you can install from
+[here](https://github.com/iRapha/junkdrawer). Then modify `main.py` to call the
+absolute path of the push binary you installed.
+
+If the cron job seems to not be working, you may try appending
+`>> /home/raphael/dev/in_rotation/cron_log.txt 2>&1` to visualize stdout. If
+the job isn't running at all, you may want to restart cron with
+`sudo /etc/init.d/cron restart`.
