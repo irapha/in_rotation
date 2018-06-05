@@ -50,8 +50,16 @@ Once a matching pair has been found the rules change:
 If you want to set up the script to run daily (the recommended frequency), you
 may set up a cron job.
 
-TODO: set up cron job
+To do this, first make sure you have run `python main.py` at least once, so the
+authorization token is created. Then, you will need to find the absolute path
+of the python runtime which has spotipy installed. I'm using venv, so that is
+`/home/raphael/dev/in_rotation/rot/bin/python` for me. To find yours, you can
+do `which python`
 
+Then, run `crontab -e`. This will open vim. Insert the following line:
+```
+0 0 *  *  *  /home/raphael/dev/in_rotation/rot/bin/python /home/raphael/dev/in_rotation/main.py
+```
 
 ## Using the Playlist
 - every day, the playlist is updated.
