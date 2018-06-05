@@ -5,7 +5,7 @@ import os
 from pprint import pprint
 from datetime import datetime, timedelta
 from spotipy.oauth2 import SpotifyClientCredentials
-from secret import USER_EMAIL, CLIENT_ID, CLIENT_SECRET, PLAYLIST_ID
+from secret import USER_EMAIL, CLIENT_ID, CLIENT_SECRET, PLAYLIST_ID, LOG_PATH
 from util import get_recently_added, get_in_rotation, get_ids
 
 
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     sp = spotipy.Spotify(auth=token)
     user_id = sp.current_user()['id']
 
-    log = open('log.txt', 'w')
+    log = open(os.path.join(LOG_PATH, 'log.txt'), 'w')
 
     # First, find an alignment. we want to find the first song in in_rotation
     # that has a match in recently_added. any song before it in recently_added
