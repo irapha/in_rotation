@@ -50,7 +50,7 @@ if __name__ == '__main__':
     log = open(os.path.join(LOG_PATH, 'log.txt'), 'w')
     now = datetime.now()
     print(now)
-    log.write(str(now))
+    log.write(str(now) + '\n')
 
     # First, find an alignment. we want to find the first song in in_rotation
     # that has a match in recently_added. any song before it in recently_added
